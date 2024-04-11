@@ -1,7 +1,9 @@
 package switchfully.com.eurder.customers.dto;
 
-import java.util.UUID;
+import lombok.Data;
 
+import java.util.UUID;
+@Data
 public class CustomerDTO {
     private UUID id;
     private String firstName;
@@ -19,27 +21,4 @@ public class CustomerDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 }

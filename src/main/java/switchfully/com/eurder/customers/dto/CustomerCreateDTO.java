@@ -1,23 +1,23 @@
 package switchfully.com.eurder.customers.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
 public class CustomerCreateDTO {
-    @NotBlank
+    @NotBlank(message = "First name must be provided")
     private String firstName;
-    @NotBlank
+    @NotBlank(message = "Last name must be provided")
     private String lastName;
-    @NotBlank
-    @Size(min=5, max=100)
+    @NotBlank(message = "address must be provided")
+    @Size(min=5, max=100,message = "address must have at least 5 letters, maximum 100 letters")
     private String address;
-    @Email
+    @NotBlank(message="Email must be provided")
+    @Email(message = "Please provide a correct email address")
     private String emailAddress;
-    @Size(min=7,max=15)
+    @NotBlank(message = "Phone number must be provided")
+    @Size(min=7,max=15,message = "Phone number must be between 7 and 15 numbers")
+    @Positive(message = "Phone number must be a positive number")
     private String phoneNumber;
 
     public CustomerCreateDTO(String firstName, String lastName, String address, String emailAddress, String phoneNumber) {
@@ -27,6 +27,4 @@ public class CustomerCreateDTO {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
     }
-
-
 }

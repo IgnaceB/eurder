@@ -1,6 +1,7 @@
 package switchfully.com.eurder.customers;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -40,17 +44,19 @@ public class CustomerServiceEndToEndTest {
         CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789");
 
         CustomerDTO customerDTO = RestAssured.given()
-                .port(port)
+
                 .accept(JSON)
                 .contentType(JSON)
                 .body(customerCreateDTO)
                 .when()
+                .port(port)
                 .post(PATH)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .as(CustomerDTO.class);
+
         Assertions.assertThat(customerDTO.getFirstName()).isEqualTo(customerCreateDTO.getFirstName());
         Assertions.assertThat(customerDTO.getLastName()).isEqualTo(customerCreateDTO.getLastName());
         Assertions.assertThat(customerDTO.getAddress()).isEqualTo(customerCreateDTO.getAddress());
@@ -59,5 +65,36 @@ public class CustomerServiceEndToEndTest {
 
 
     }
+    private static Map<String, Object> getExpectedMapForFullyInvalidCreateUserDTO() {
+        Map<String, Object> mapExpected = new HashMap<>();
+        Map<String, String> errorsMap = new HashMap<>();
+        errorsMap.put("firstName", "First name must be provided");
+        errorsMap.put("lastName", "Last name must be provided");
+        errorsMap.put("address", "address must have at least 5 letters, maximum 100 letters");
+        errorsMap.put("emailAddress", "Please provide a correct email address");
+        errorsMap.put("phoneNumber", "Phone number must be between 7 and 15 numbers");
+        mapExpected.put("errors", errorsMap);
+        return mapExpected;
+    }
+    @Test
+    void createCustomer_givenCustomerCreateDTOIsTotallyInvalid_thenReturnListOfErrors() {
+        CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("","","te","emailtesttest","01");
 
+        HashMap errorsMap = RestAssured.given()
+                .accept(JSON)
+                .contentType(JSON)
+                .body(customerCreateDTO)
+                .when()
+                .port(port)
+                .post(PATH)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_ACCEPTABLE.value())
+                .extract()
+                .as(HashMap.class);
+
+        Assertions.assertThat(errorsMap).containsAllEntriesOf(getExpectedMapForFullyInvalidCreateUserDTO());
+
+
+    }
 }
