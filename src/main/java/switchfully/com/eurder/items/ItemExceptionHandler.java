@@ -1,4 +1,4 @@
-package switchfully.com.eurder.customers;
+package switchfully.com.eurder.items;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -12,18 +12,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import switchfully.com.eurder.customers.CustomerController;
 import switchfully.com.eurder.exceptions.CustomerNotFoundException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice(assignableTypes = CustomerController.class)
-public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
+@ControllerAdvice(assignableTypes =ItemController.class)
+public class ItemExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Following validation error(s) occurred while creating a customer");
+        response.put("message", "Following validation error(s) occurred while creating a item");
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -33,15 +34,8 @@ public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         response.put("errors", errors);
-        this.logger.error("Following validation error(s) occurred while creating a customer");
+        this.logger.error("Following validation error(s) occurred while creating a item");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
-    }
-
-    @ExceptionHandler(CustomerNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void customerNotFoundException(CustomerNotFoundException exception, HttpServletResponse response) throws IOException{
-        this.logger.error(exception.getMessage());
-        response.sendError(HttpStatus.NOT_FOUND.value(),exception.getMessage());
     }
 
 

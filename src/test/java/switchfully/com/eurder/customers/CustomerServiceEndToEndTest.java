@@ -81,7 +81,7 @@ public class CustomerServiceEndToEndTest {
         return mapExpected;
     }
     @Test
-    void createCustomer_givenCustomerCreateDTOIsTotallyInvalid_thenReturnListOfErrors() {
+    void createCustomer_givenCustomerCreateDTOIsTotallyInvalid_thenReturnMapOfErrors() {
         CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("","","te","emailtesttest","01");
 
         HashMap errorsMap = RestAssured.given()

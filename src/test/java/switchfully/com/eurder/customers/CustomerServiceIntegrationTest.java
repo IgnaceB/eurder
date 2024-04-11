@@ -26,10 +26,10 @@ public class CustomerServiceIntegrationTest {
 
     @BeforeEach
     public void Setup(){
-        customerService=new CustomerService(customerRepository,customerMapper);
         customer1=new Customer("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
         customer2=new Customer("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
-        customerService=new CustomerService(new CustomerRepository(newArrayList(customer1,customer2)),new CustomerMapper());
+        customerRepository=new CustomerRepository(newArrayList(customer1,customer2));
+        customerService=new CustomerService(customerRepository,customerMapper);
 
     }
 
