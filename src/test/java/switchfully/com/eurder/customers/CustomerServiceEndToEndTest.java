@@ -13,9 +13,11 @@ import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.http.ContentType.JSON;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -94,7 +96,29 @@ public class CustomerServiceEndToEndTest {
                 .as(HashMap.class);
 
         Assertions.assertThat(errorsMap).containsAllEntriesOf(getExpectedMapForFullyInvalidCreateUserDTO());
+    }
 
+    @Test
+    void getAllCustomer_givenCustomerRepositoryIsNotNull_thenReturnListOfCustomerDTO(){
+        CustomerCreateDTO createCustomer1=new CustomerCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
+        CustomerCreateDTO createCustomer2=new CustomerCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
+        Customer customer1 = customerRepository.createCustomer(createCustomer1);
+        Customer customer2 = customerRepository.createCustomer(createCustomer2);
+
+        CustomerDTO[] listOfCustomersDTO = RestAssured.given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get(PATH)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(CustomerDTO[].class);
+
+        Assertions.assertThat(listOfCustomersDTO).containsExactlyInAnyOrder(
+                new CustomerDTO(customer1.getId(),customer1.getFirstName(),customer1.getLastName(),customer1.getAddress(),customer1.getEmailAddress(),customer1.getPhoneNumber()),
+                new CustomerDTO(customer2.getId(),customer2.getFirstName(),customer2.getLastName(),customer2.getAddress(),customer2.getEmailAddress(),customer2.getPhoneNumber()));
 
     }
 }

@@ -1,9 +1,14 @@
 package switchfully.com.eurder.customers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.exceptions.CustomerNotFoundException;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -16,6 +21,20 @@ public class CustomerService {
     }
 
     public CustomerDTO createCustomer(CustomerCreateDTO customerCreateDTO) {
-        return customerMapper.ToDTO(customerRepository.createCustomer(customerCreateDTO));
+        return customerMapper.toDTO(customerRepository.createCustomer(customerCreateDTO));
+    }
+
+    public List<CustomerDTO> getAllCustomers() {
+    return customerRepository.getAllCustomers().stream()
+            .map(customerMapper::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    public CustomerDTO getOneCustomerByID(UUID customerId) {
+        return customerMapper.toDTO(
+                customerRepository.getOneCustomerById(customerId)
+                .orElseThrow(()-> new CustomerNotFoundException("Can't find any customer with this ID")));
+
+
     }
 }

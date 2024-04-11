@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/customers")
 public class CustomerController {
@@ -18,6 +20,11 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDTO createCustomer(@Valid @RequestBody CustomerCreateDTO customerCreateDTO){
         return customerService.createCustomer(customerCreateDTO);
+    }
+    @GetMapping(produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerDTO> getAllCustomers(){
+        return customerService.getAllCustomers();
     }
 
 }
