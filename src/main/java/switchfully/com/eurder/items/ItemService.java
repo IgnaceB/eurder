@@ -1,8 +1,12 @@
 package switchfully.com.eurder.items;
 
 import org.springframework.stereotype.Service;
+import switchfully.com.eurder.exceptions.ItemNotFoundException;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
+
+import java.util.UUID;
+
 @Service
 public class ItemService {
 
@@ -17,5 +21,9 @@ public class ItemService {
     public ItemDTO createItem(ItemCreateDTO itemCreateDTO) {
         return itemMapper.toDto(
                 itemRepository.createItem(itemCreateDTO));
+    }
+
+    public Item getOneItemById(UUID itemId) {
+        return itemRepository.getOneItemById(itemId).orElseThrow(ItemNotFoundException::new);
     }
 }

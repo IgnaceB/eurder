@@ -4,7 +4,9 @@ import org.springframework.stereotype.Repository;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.SequencedCollection;
+import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -32,5 +34,11 @@ public class ItemRepository {
 
     public List<Item> getAllItems() {
         return this.items;
+    }
+
+    public Optional<Item> getOneItemById(UUID itemId) {
+       return this.items.stream()
+                .filter(item -> item.getId().equals(itemId))
+                .findFirst();
     }
 }

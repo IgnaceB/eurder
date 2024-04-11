@@ -6,13 +6,19 @@ import org.junit.jupiter.api.Test;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
 
+import static org.assertj.core.util.Lists.newArrayList;
+
 public class ItemServiceIntegrationTest {
     private ItemRepository itemRepository ;
     private ItemMapper itemMapper=new ItemMapper();
     private ItemService itemService;
+    private Item item1;
+    private Item item2;
     @BeforeEach
     void beforeEach(){
-        itemRepository= new ItemRepository();
+        item1=new Item("nameItem1","descriptionItem1",10.00,5);
+        item2=new Item("nameItem2","descriptionItem2",20.00,10);
+        itemRepository=new ItemRepository(newArrayList(item1,item2));
         itemService = new ItemService(itemRepository,itemMapper);
     }
     @Test
@@ -27,5 +33,10 @@ public class ItemServiceIntegrationTest {
         Assertions.assertThat(newItemDTO.getAmount()).isEqualTo(itemCreateDTO.getAmount());
 
         Assertions.assertThat(newItemDTO).isEqualTo(itemMapper.toDto(itemRepository.getAllItems().getLast()));
+    }
+
+    @Test
+    void getOneItemById_givenItemIDExist_thenReturnItem(){
+        Assertions.assertThat(itemService.getOneItemById(item1.getId())).isEqualTo(item1);
     }
 }
