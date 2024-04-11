@@ -1,7 +1,6 @@
 package switchfully.com.eurder.customers;
 
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
+import java.util.UUID;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.util.Lists.newArrayList;
@@ -42,6 +43,7 @@ public class CustomerServiceEndToEndTest {
         RestAssured.baseURI=HOST;
     }
     @Test
+    @DirtiesContext
     void createCustomer_givenCustomerCreateDTOIsValid_thenReturnTheNewCustomerDTO() {
         CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789");
 
@@ -99,6 +101,7 @@ public class CustomerServiceEndToEndTest {
     }
 
     @Test
+    @DirtiesContext
     void getAllCustomer_givenCustomerRepositoryIsNotNull_thenReturnListOfCustomerDTO(){
         CustomerCreateDTO createCustomer1=new CustomerCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
         CustomerCreateDTO createCustomer2=new CustomerCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
@@ -119,6 +122,56 @@ public class CustomerServiceEndToEndTest {
         Assertions.assertThat(listOfCustomersDTO).containsExactlyInAnyOrder(
                 new CustomerDTO(customer1.getId(),customer1.getFirstName(),customer1.getLastName(),customer1.getAddress(),customer1.getEmailAddress(),customer1.getPhoneNumber()),
                 new CustomerDTO(customer2.getId(),customer2.getFirstName(),customer2.getLastName(),customer2.getAddress(),customer2.getEmailAddress(),customer2.getPhoneNumber()));
+
+    }
+    @Test
+    @DirtiesContext
+    void getOneCustomerById_givenCustomerIdExistInRepository_thenReturnCustomerDTO(){
+        CustomerCreateDTO createCustomer1=new CustomerCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
+        CustomerCreateDTO createCustomer2=new CustomerCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
+        Customer customer1 = customerRepository.createCustomer(createCustomer1);
+        Customer customer2 = customerRepository.createCustomer(createCustomer2);
+
+        CustomerDTO customerDTO = RestAssured
+                .given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get(PATH+"/"+customer1.getId().toString())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(CustomerDTO.class);
+        Assertions.assertThat(customerDTO).isEqualTo(customerMapper.toDTO(customer1));
+
+    }
+
+    @Test
+    void getOneCustomerById_givenCustomerIdDoesNotExistInRepository_thenReturnStatus404NotFound(){
+        UUID fakeId = UUID.randomUUID();
+        RestAssured
+                .given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get(PATH+"/"+fakeId.toString())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+
+    }
+    @Test
+    void getOneCustomerById_givenCustomerIdIncorrectFormat_thenReturnStatus400BadRequest(){
+        RestAssured
+                .given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get(PATH+"/thisIsNotAnUUID")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
 }

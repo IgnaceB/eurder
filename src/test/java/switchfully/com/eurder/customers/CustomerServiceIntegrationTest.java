@@ -4,25 +4,37 @@ package switchfully.com.eurder.customers;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
 import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.exceptions.CustomerNotFoundException;
+
+import java.util.UUID;
 
 import static org.assertj.core.util.Lists.newArrayList;
 
 public class CustomerServiceIntegrationTest {
 
+    private CustomerRepository customerRepository =new CustomerRepository();
+    private CustomerMapper customerMapper =new CustomerMapper();
+
 
     private CustomerService customerService;
 
+    private Customer customer1;
+    private Customer customer2;
+
     @BeforeEach
     public void Setup(){
-        customerService=new CustomerService(new CustomerRepository(),new CustomerMapper());
+        customerService=new CustomerService(customerRepository,customerMapper);
+        customer1=new Customer("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
+        customer2=new Customer("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
+        customerService=new CustomerService(new CustomerRepository(newArrayList(customer1,customer2)),new CustomerMapper());
+
     }
 
     @Test
     public void getAllCustomers_givenCustomerRepositoryIsNotEmpty_thenReturnListOfCustomerDTO(){
-        Customer customer1=new Customer("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
-        Customer customer2=new Customer("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
         customerService=new CustomerService(new CustomerRepository(newArrayList(customer1,customer2)),new CustomerMapper());
 
         Assertions.assertThat(customerService.getAllCustomers()).containsExactlyInAnyOrder(
@@ -44,5 +56,19 @@ public class CustomerServiceIntegrationTest {
         Assertions.assertThat(customerDTO.getPhoneNumber()).isEqualTo(customerCreateDTO.getPhoneNumber());
         Assertions.assertThat(customerService.getAllCustomers().getLast()).isEqualTo(customerDTO);
     }
+
+    @Test
+    public void getOneCustomerById_givenIDExistInCustomerRepository_thenReturnCustomerDTO(){
+        Assertions.assertThat(customerService.getOneCustomerByID(customer1.getId())).isEqualTo(
+                new CustomerDTO(customer1.getId(),customer1.getFirstName(),customer1.getLastName(),customer1.getAddress(),customer1.getEmailAddress(),customer1.getPhoneNumber()));
+    }
+
+    @Test
+    public void getOneCustomerById_givenIDDoesNotExistInCustomerRepository_thenThrowCustomerNotFoundException(){
+        UUID fakeId = UUID.randomUUID();
+
+        Assertions.assertThatThrownBy(()->customerService.getOneCustomerByID(fakeId)).isInstanceOf(CustomerNotFoundException.class);
+    }
+
 
 }

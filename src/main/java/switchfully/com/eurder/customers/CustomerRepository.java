@@ -40,7 +40,7 @@ public class CustomerRepository {
 
     public Optional<Customer> getOneCustomerById(UUID customerId) {
         return this.customers.stream()
-                .filter(customer -> customer.getId()==customerId)
+                .filter(customer -> customer.getId().equals(customerId))
                 .findFirst();
     }
 }
