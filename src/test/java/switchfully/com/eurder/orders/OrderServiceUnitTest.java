@@ -55,7 +55,7 @@ class OrderServiceUnitTest {
     @Test
     void calculateTotalPrice_givenListItemGroupNotEmpty_thenReturnTotalPriceOfAllGroups() {
         List<ItemGroup> listItemGroup = newArrayList(itemGroup1,itemGroup2) ;
-        Assertions.assertThat(OrderService.calculateTotalPrice(listItemGroup)).isEqualTo(100.00);
+        Assertions.assertThat(orderService.calculateTotalPrice(listItemGroup)).isEqualTo(100.00);
     }
 
     @Test
@@ -70,10 +70,10 @@ class OrderServiceUnitTest {
         Order order = new Order(newArrayList(itemGroup1, itemGroup2), customer1.getId(), 100.00);
         OrderDTO orderDTO = new OrderDTO(order.getId(), order.getListItemGroup(), order.getUserId(), order.getTotalPrice());
 
-        Mockito.when(customerService.getOneCustomerByID(customer1.getId())).thenReturn(customerDTO1);
+        Mockito.when(customerService.getOneCustomerByID(orderCreateDTO.getUserId())).thenReturn(customerDTO1);
         Mockito.when(itemGroupService.createItemGroup(itemGroup1CreateDTO)).thenReturn(itemGroup1);
         Mockito.when(itemGroupService.createItemGroup(itemGroup2CreateDTO)).thenReturn(itemGroup2);
-        Mockito.when(orderRepository.createOrder(order.getListItemGroup(), order.getUserId(), order.getTotalPrice())).thenReturn(order);
+        Mockito.when(orderRepository.createOrder(orderService.createItemGroups(orderCreateDTO), customerDTO1.getId(), orderService.calculateTotalPrice(orderService.createItemGroups(orderCreateDTO)))).thenReturn(order);
         Mockito.when(orderMapper.toDto(order)).thenReturn(orderDTO);
 
         OrderDTO producedOrderDTO = orderService.createOrder(orderCreateDTO);

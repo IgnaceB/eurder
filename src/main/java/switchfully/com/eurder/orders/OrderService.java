@@ -26,10 +26,7 @@ public class OrderService {
     }
 
     public OrderDTO createOrder(OrderCreateDTO orderCreateDTO) {
-        List<ItemGroup> listItemGroup = orderCreateDTO.getListItemGroupCreateDTO()
-                .stream()
-                .map(itemCreateGroupDTO->itemGroupService.createItemGroup(itemCreateGroupDTO))
-                .toList();
+        List<ItemGroup> listItemGroup = createItemGroups(orderCreateDTO);
 
         CustomerDTO customerData = customerService.getOneCustomerByID(orderCreateDTO.getUserId());
         Order order = orderRepository.createOrder(listItemGroup,customerData.getId(),calculateTotalPrice(listItemGroup));
@@ -38,7 +35,14 @@ public class OrderService {
 
     }
 
-    protected static double calculateTotalPrice(List<ItemGroup> listItemGroup) {
+    protected List<ItemGroup> createItemGroups(OrderCreateDTO orderCreateDTO) {
+        return orderCreateDTO.getListItemGroupCreateDTO()
+                .stream()
+                .map(itemCreateGroupDTO->itemGroupService.createItemGroup(itemCreateGroupDTO))
+                .toList();
+    }
+
+    protected double calculateTotalPrice(List<ItemGroup> listItemGroup) {
         return listItemGroup.stream()
                 .map(ItemGroup::calculateTotalPriceOfTheGroup)
                 .mapToDouble(Double::doubleValue)
