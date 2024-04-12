@@ -3,13 +3,10 @@ package switchfully.com.eurder.items;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import switchfully.com.eurder.customers.Customer;
-import switchfully.com.eurder.customers.CustomerRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.util.Lists.newArrayList;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ItemRepositoryTest {
 

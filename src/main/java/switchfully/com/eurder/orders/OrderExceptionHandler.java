@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import switchfully.com.eurder.customers.CustomerController;
 import switchfully.com.eurder.exceptions.CustomerNotFoundException;
 import switchfully.com.eurder.exceptions.ItemNotFoundException;
 

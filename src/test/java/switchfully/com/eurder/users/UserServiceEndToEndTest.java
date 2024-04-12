@@ -1,4 +1,4 @@
-package switchfully.com.eurder.customers;
+package switchfully.com.eurder.users;
 
 import io.restassured.RestAssured;
 import org.assertj.core.api.Assertions;
@@ -9,12 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
-import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.users.dto.UserCreateDTO;
+import switchfully.com.eurder.users.dto.UserDTO;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 import static io.restassured.http.ContentType.JSON;
@@ -22,7 +21,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class CustomerServiceEndToEndTest {
+public class UserServiceEndToEndTest {
 
     public static final String HOST="http://localhost";
     public static final String PATH="/customers";
@@ -30,13 +29,13 @@ public class CustomerServiceEndToEndTest {
     private int port;
 
     @Autowired
-    private CustomerMapper customerMapper;
+    private UserMapper userMapper;
     @Autowired
-    private CustomerRepository customerRepository;
+    private UserRepository userRepository;
     @Autowired
-    private CustomerService customerService;
+    private UserService userService;
 
-    private CustomerController customerController;
+    private UserController userController;
 
     @BeforeEach
     void setUp(){
@@ -45,13 +44,13 @@ public class CustomerServiceEndToEndTest {
     @Test
     @DirtiesContext
     void createCustomer_givenCustomerCreateDTOIsValid_thenReturnTheNewCustomerDTO() {
-        CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789");
+        UserCreateDTO userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
 
-        CustomerDTO customerDTO = RestAssured.given()
+        UserDTO userDTO = RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
-                .body(customerCreateDTO)
+                .body(userCreateDTO)
                 .when()
                 .port(port)
                 .post(PATH)
@@ -59,13 +58,13 @@ public class CustomerServiceEndToEndTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(CustomerDTO.class);
+                .as(UserDTO.class);
 
-        Assertions.assertThat(customerDTO.getFirstName()).isEqualTo(customerCreateDTO.getFirstName());
-        Assertions.assertThat(customerDTO.getLastName()).isEqualTo(customerCreateDTO.getLastName());
-        Assertions.assertThat(customerDTO.getAddress()).isEqualTo(customerCreateDTO.getAddress());
-        Assertions.assertThat(customerDTO.getEmailAddress()).isEqualTo(customerCreateDTO.getEmailAddress());
-        Assertions.assertThat(customerDTO.getPhoneNumber()).isEqualTo(customerCreateDTO.getPhoneNumber());
+        Assertions.assertThat(userDTO.getFirstName()).isEqualTo(userCreateDTO.getFirstName());
+        Assertions.assertThat(userDTO.getLastName()).isEqualTo(userCreateDTO.getLastName());
+        Assertions.assertThat(userDTO.getAddress()).isEqualTo(userCreateDTO.getAddress());
+        Assertions.assertThat(userDTO.getEmailAddress()).isEqualTo(userCreateDTO.getEmailAddress());
+        Assertions.assertThat(userDTO.getPhoneNumber()).isEqualTo(userCreateDTO.getPhoneNumber());
 
 
     }
@@ -73,6 +72,7 @@ public class CustomerServiceEndToEndTest {
         Map<String, Object> mapExpected = new HashMap<>();
         Map<String, String> errorsMap = new HashMap<>();
         errorsMap.put("firstName", "First name must be provided");
+        errorsMap.put("password", "password must be provided");
         errorsMap.put("lastName", "Last name must be provided");
         errorsMap.put("address", "address must have at least 5 letters, maximum 100 letters");
         errorsMap.put("emailAddress", "Please provide a correct email address");
@@ -82,12 +82,12 @@ public class CustomerServiceEndToEndTest {
     }
     @Test
     void createCustomer_givenCustomerCreateDTOIsTotallyInvalid_thenReturnMapOfErrors() {
-        CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("","","te","emailtesttest","01");
+        UserCreateDTO userCreateDTO = new UserCreateDTO("","","te","emailtesttest","01","");
 
         HashMap errorsMap = RestAssured.given()
                 .accept(JSON)
                 .contentType(JSON)
-                .body(customerCreateDTO)
+                .body(userCreateDTO)
                 .when()
                 .port(port)
                 .post(PATH)
@@ -103,12 +103,12 @@ public class CustomerServiceEndToEndTest {
     @Test
     @DirtiesContext
     void getAllCustomer_givenCustomerRepositoryIsNotNull_thenReturnListOfCustomerDTO(){
-        CustomerCreateDTO createCustomer1=new CustomerCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
-        CustomerCreateDTO createCustomer2=new CustomerCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
-        Customer customer1 = customerRepository.createCustomer(createCustomer1);
-        Customer customer2 = customerRepository.createCustomer(createCustomer2);
+        UserCreateDTO createCustomer1=new UserCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1","mdp");
+        UserCreateDTO createCustomer2=new UserCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2","mdp");
+        User user1 = userRepository.createCustomer(createCustomer1);
+        User user2 = userRepository.createCustomer(createCustomer2);
 
-        CustomerDTO[] listOfCustomersDTO = RestAssured.given()
+        UserDTO[] listOfCustomersDTO = RestAssured.given()
                 .accept(JSON)
                 .when()
                 .port(port)
@@ -117,33 +117,33 @@ public class CustomerServiceEndToEndTest {
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(CustomerDTO[].class);
+                .as(UserDTO[].class);
 
         Assertions.assertThat(listOfCustomersDTO).containsExactlyInAnyOrder(
-                new CustomerDTO(customer1.getId(),customer1.getFirstName(),customer1.getLastName(),customer1.getAddress(),customer1.getEmailAddress(),customer1.getPhoneNumber()),
-                new CustomerDTO(customer2.getId(),customer2.getFirstName(),customer2.getLastName(),customer2.getAddress(),customer2.getEmailAddress(),customer2.getPhoneNumber()));
+                new UserDTO(user1.getId(), user1.getFirstName(), user1.getLastName(), user1.getAddress(), user1.getEmailAddress(), user1.getPhoneNumber()),
+                new UserDTO(user2.getId(), user2.getFirstName(), user2.getLastName(), user2.getAddress(), user2.getEmailAddress(), user2.getPhoneNumber()));
 
     }
     @Test
     @DirtiesContext
     void getOneCustomerById_givenCustomerIdExistInRepository_thenReturnCustomerDTO(){
-        CustomerCreateDTO createCustomer1=new CustomerCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1");
-        CustomerCreateDTO createCustomer2=new CustomerCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2");
-        Customer customer1 = customerRepository.createCustomer(createCustomer1);
-        Customer customer2 = customerRepository.createCustomer(createCustomer2);
+        UserCreateDTO createCustomer1=new UserCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1","mdp");
+        UserCreateDTO createCustomer2=new UserCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2","mdp");
+        User user1 = userRepository.createCustomer(createCustomer1);
+        User user2 = userRepository.createCustomer(createCustomer2);
 
-        CustomerDTO customerDTO = RestAssured
+        UserDTO userDTO = RestAssured
                 .given()
                 .accept(JSON)
                 .when()
                 .port(port)
-                .get(PATH+"/"+customer1.getId().toString())
+                .get(PATH+"/"+ user1.getId().toString())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(CustomerDTO.class);
-        Assertions.assertThat(customerDTO).isEqualTo(customerMapper.toDTO(customer1));
+                .as(UserDTO.class);
+        Assertions.assertThat(userDTO).isEqualTo(userMapper.toDTO(user1));
 
     }
 

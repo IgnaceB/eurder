@@ -1,4 +1,4 @@
-package switchfully.com.eurder.customers;
+package switchfully.com.eurder.users;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice(assignableTypes = CustomerController.class)
-public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
+@ControllerAdvice(assignableTypes = UserController.class)
+public class UserExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, Object> response = new HashMap<>();

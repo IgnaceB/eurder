@@ -9,11 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import switchfully.com.eurder.customers.CustomerMapper;
-import switchfully.com.eurder.customers.CustomerRepository;
-import switchfully.com.eurder.customers.CustomerService;
-import switchfully.com.eurder.customers.dto.CustomerCreateDTO;
-import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.users.UserService;
+import switchfully.com.eurder.users.dto.UserCreateDTO;
+import switchfully.com.eurder.users.dto.UserDTO;
 import switchfully.com.eurder.itemgroup.ItemGroup;
 import switchfully.com.eurder.itemgroup.ItemGroupCreateDTO;
 import switchfully.com.eurder.itemgroup.ItemGroupService;
@@ -41,7 +39,7 @@ public class OrderServiceEndToEndTest {
         @Autowired
         private ItemService itemService;
         @Autowired
-        private CustomerService customerService;
+        private UserService userService;
         @Autowired
         private ItemGroupService itemGroupService;
         @Autowired
@@ -50,7 +48,7 @@ public class OrderServiceEndToEndTest {
 
         private OrderController orderController;
 
-        private CustomerDTO customerDTO;
+        private UserDTO userDTO;
         private ItemDTO itemDTO1;
         private ItemGroup itemGroup1;
         private ItemGroup itemGroup2;
@@ -60,8 +58,8 @@ public class OrderServiceEndToEndTest {
         @BeforeEach
         void setUp(){
             RestAssured.baseURI=HOST;
-            CustomerCreateDTO customerCreateDTO = new CustomerCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789");
-            customerDTO = customerService.createCustomer(customerCreateDTO);
+            UserCreateDTO userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
+            userDTO = userService.createCustomer(userCreateDTO);
 
             ItemCreateDTO itemCreateDTO1 = new ItemCreateDTO("nameTest", "descriptionTest", 10.0, 5);
             itemDTO1 = itemService.createItem(itemCreateDTO1);
@@ -76,7 +74,7 @@ public class OrderServiceEndToEndTest {
         @Test
         @DirtiesContext
         void createOrder_givenOrderDTOIsValidAndRegisterCustomerIdExist_thenReturnTheNewOrderDTO(){
-            OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO,customerDTO.getId());
+            OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO, userDTO.getId());
 
             OrderDTO orderDTO = RestAssured.given()
 
@@ -124,7 +122,7 @@ public class OrderServiceEndToEndTest {
     @DirtiesContext
     void createOrder_givenOrderDTOIsValidButIdItemDoesNotExistAndRegisterCustomerIdExist_thenReturnStatus404(){
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(UUID.randomUUID(),3)),customerDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(UUID.randomUUID(),3)), userDTO.getId());
         RestAssured.given()
 
                 .accept(JSON)
@@ -142,7 +140,7 @@ public class OrderServiceEndToEndTest {
     @DirtiesContext
     void createOrder_givenOrderDTOIsNotValidButIdItemDoesNotExistAndRegisterCustomerIdExist_thenReturnStatus406(){
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(null,-1)),customerDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(null,-1)), userDTO.getId());
         RestAssured.given()
 
                 .accept(JSON)

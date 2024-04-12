@@ -1,10 +1,10 @@
-package switchfully.com.eurder.customers.dto;
+package switchfully.com.eurder.users.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class CustomerCreateDTO {
+public class UserCreateDTO {
     @NotBlank(message = "First name must be provided")
     private String firstName;
     @NotBlank(message = "Last name must be provided")
@@ -19,12 +19,16 @@ public class CustomerCreateDTO {
     @Size(min=7,max=15,message = "Phone number must be between 7 and 15 numbers")
     @Positive(message = "Phone number must be a positive number")
     private String phoneNumber;
+    @NotBlank(message = "password must be provided")
+    private String password;
 
-    public CustomerCreateDTO(String firstName, String lastName, String address, String emailAddress, String phoneNumber) {
+
+    public UserCreateDTO(String firstName, String lastName, String address, String emailAddress, String phoneNumber, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
+        this.password=password;
     }
 }

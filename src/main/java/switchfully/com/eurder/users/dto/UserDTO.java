@@ -1,10 +1,10 @@
-package switchfully.com.eurder.customers;
+package switchfully.com.eurder.users.dto;
 
 import lombok.Data;
 
 import java.util.UUID;
 @Data
-public class Customer {
+public class UserDTO {
     private UUID id;
     private String firstName;
     private String lastName;
@@ -12,14 +12,13 @@ public class Customer {
     private String address;
     private String phoneNumber;
 
-    public Customer(String firstName, String lastName, String emailAddress, String address, String phoneNumber) {
+    public UserDTO(UUID id, String firstName, String lastName, String emailAddress, String address, String phoneNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.id = UUID.randomUUID();
     }
-
 
 }

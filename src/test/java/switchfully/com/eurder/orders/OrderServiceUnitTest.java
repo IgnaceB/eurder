@@ -7,11 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Or;
 import org.mockito.junit.jupiter.MockitoExtension;
-import switchfully.com.eurder.customers.Customer;
-import switchfully.com.eurder.customers.CustomerService;
-import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.users.User;
+import switchfully.com.eurder.users.UserService;
+import switchfully.com.eurder.users.dto.UserDTO;
 import switchfully.com.eurder.itemgroup.ItemGroup;
 import switchfully.com.eurder.itemgroup.ItemGroupCreateDTO;
 import switchfully.com.eurder.itemgroup.ItemGroupService;
@@ -27,7 +26,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceUnitTest {
     @Mock
-    CustomerService customerService;
+    UserService userService;
 
     @Mock
     ItemGroupService itemGroupService;
@@ -60,20 +59,20 @@ class OrderServiceUnitTest {
 
     @Test
     void createOrder_givenOrderCreateDTOValid_thenReturnNewOrderDTO() {
-        Customer customer1 = new Customer("firstNameCustomer1", "LastNameCustomer1", "emailCustomer1", "AddressCustomer1", "phoneNumberCustomer1");
-        CustomerDTO customerDTO1 = new CustomerDTO(customer1.getId(), customer1.getFirstName(), customer1.getLastName(), customer1.getAddress(), customer1.getEmailAddress(), customer1.getPhoneNumber());
+        User user1 = new User("firstNameCustomer1", "LastNameCustomer1", "emailCustomer1", "AddressCustomer1", "phoneNumberCustomer1","mdp");
+        UserDTO userDTO1 = new UserDTO(user1.getId(), user1.getFirstName(), user1.getLastName(), user1.getAddress(), user1.getEmailAddress(), user1.getPhoneNumber());
 
         ItemGroupCreateDTO itemGroup1CreateDTO = new ItemGroupCreateDTO(item1.getId(), item1.getAmount());
         ItemGroupCreateDTO itemGroup2CreateDTO = new ItemGroupCreateDTO(item1.getId(), item1.getAmount());
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroup1CreateDTO, itemGroup2CreateDTO),customer1.getId());
-        Order order = new Order(newArrayList(itemGroup1, itemGroup2), customer1.getId(), 100.00);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroup1CreateDTO, itemGroup2CreateDTO), user1.getId());
+        Order order = new Order(newArrayList(itemGroup1, itemGroup2), user1.getId(), 100.00);
         OrderDTO orderDTO = new OrderDTO(order.getId(), order.getListItemGroup(), order.getUserId(), order.getTotalPrice());
 
-        Mockito.when(customerService.getOneCustomerByID(orderCreateDTO.getUserId())).thenReturn(customerDTO1);
+        Mockito.when(userService.getOneCustomerByID(orderCreateDTO.getUserId())).thenReturn(userDTO1);
         Mockito.when(itemGroupService.createItemGroup(itemGroup1CreateDTO)).thenReturn(itemGroup1);
         Mockito.when(itemGroupService.createItemGroup(itemGroup2CreateDTO)).thenReturn(itemGroup2);
-        Mockito.when(orderRepository.createOrder(orderService.createItemGroups(orderCreateDTO), customerDTO1.getId(), orderService.calculateTotalPrice(orderService.createItemGroups(orderCreateDTO)))).thenReturn(order);
+        Mockito.when(orderRepository.createOrder(orderService.createItemGroups(orderCreateDTO), userDTO1.getId(), orderService.calculateTotalPrice(orderService.createItemGroups(orderCreateDTO)))).thenReturn(order);
         Mockito.when(orderMapper.toDto(order)).thenReturn(orderDTO);
 
         OrderDTO producedOrderDTO = orderService.createOrder(orderCreateDTO);

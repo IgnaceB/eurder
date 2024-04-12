@@ -1,8 +1,8 @@
 package switchfully.com.eurder.orders;
 
 import org.springframework.stereotype.Service;
-import switchfully.com.eurder.customers.CustomerService;
-import switchfully.com.eurder.customers.dto.CustomerDTO;
+import switchfully.com.eurder.users.UserService;
+import switchfully.com.eurder.users.dto.UserDTO;
 import switchfully.com.eurder.itemgroup.ItemGroup;
 import switchfully.com.eurder.itemgroup.ItemGroupService;
 import switchfully.com.eurder.orders.dto.OrderCreateDTO;
@@ -16,19 +16,19 @@ public class OrderService {
     private OrderMapper orderMapper;
     private OrderRepository orderRepository;
     private ItemGroupService itemGroupService;
-    private CustomerService customerService;
+    private UserService userService;
 
-    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository, ItemGroupService itemGroupService, CustomerService customerService) {
+    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository, ItemGroupService itemGroupService, UserService userService) {
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.itemGroupService = itemGroupService;
-        this.customerService = customerService;
+        this.userService = userService;
     }
 
     public OrderDTO createOrder(OrderCreateDTO orderCreateDTO) {
         List<ItemGroup> listItemGroup = createItemGroups(orderCreateDTO);
 
-        CustomerDTO customerData = customerService.getOneCustomerByID(orderCreateDTO.getUserId());
+        UserDTO customerData = userService.getOneCustomerByID(orderCreateDTO.getUserId());
         Order order = orderRepository.createOrder(listItemGroup,customerData.getId(),calculateTotalPrice(listItemGroup));
         return orderMapper.toDto(order);
 
