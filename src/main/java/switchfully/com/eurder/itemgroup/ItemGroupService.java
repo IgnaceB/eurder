@@ -28,6 +28,7 @@ public class ItemGroupService {
 
     }
 
+
     private LocalDate calculateShippingDate(int amount, int amountOrdered) {
         if (amount>amountOrdered){
             return LocalDate.now().plusDays(DAYS_BEFORE_SHIPPING_ITEM_IN_STOCK);
