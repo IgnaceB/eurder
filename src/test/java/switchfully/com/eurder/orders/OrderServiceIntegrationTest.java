@@ -62,7 +62,8 @@ public class OrderServiceIntegrationTest {
     void createOrder_givenOrderCreateDTOIsValid_thenReturnNewOrderDTO() {
         ItemGroupCreateDTO itemGroupCreateDTO1 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup1.getAmount());
         ItemGroupCreateDTO itemGroupCreateDTO2 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup2.getAmount());
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2), userDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
+        orderCreateDTO.updateIdUser(userDTO.getId());
 
         OrderDTO orderDTO = orderService.createOrder(orderCreateDTO);
         Assertions.assertThat(orderDTO.getUserId()).isEqualTo(userDTO.getId());
@@ -83,7 +84,8 @@ public class OrderServiceIntegrationTest {
         ItemGroupCreateDTO itemGroupCreateDTO2 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup2.getAmount());
 
         UUID fakeId=UUID.randomUUID();
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2),fakeId);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
+        orderCreateDTO.updateIdUser(fakeId);
 
         Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO)).isInstanceOf(CustomerNotFoundException.class);
 
@@ -93,7 +95,8 @@ public class OrderServiceIntegrationTest {
         UUID fakeId = UUID.randomUUID();
         ItemGroupCreateDTO itemGroupCreateDTO1 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup1.getAmount());
         ItemGroupCreateDTO itemGroupCreateDTO2 = new ItemGroupCreateDTO(fakeId,itemGroup2.getAmount());
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2), userDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
+        orderCreateDTO.updateIdUser( userDTO.getId());
 
         Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO)).isInstanceOf(ItemNotFoundException.class);
 

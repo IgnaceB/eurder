@@ -22,10 +22,12 @@ import switchfully.com.eurder.orders.dto.OrderCreateDTO;
 import switchfully.com.eurder.orders.dto.OrderDTO;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -49,16 +51,18 @@ public class OrderServiceEndToEndTest {
         private OrderController orderController;
 
         private UserDTO userDTO;
+        private UserCreateDTO userCreateDTO;
         private ItemDTO itemDTO1;
         private ItemGroup itemGroup1;
         private ItemGroup itemGroup2;
         private List<ItemGroupCreateDTO> listItemGroupCreateDTO;
-
+        private static final String ADMIN_ID ="33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
+        private static final String ADMIN_MDP = "mdp";
 
         @BeforeEach
         void setUp(){
             RestAssured.baseURI=HOST;
-            UserCreateDTO userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
+            userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
             userDTO = userService.createCustomer(userCreateDTO);
 
             ItemCreateDTO itemCreateDTO1 = new ItemCreateDTO("nameTest", "descriptionTest", 10.0, 5);
@@ -74,12 +78,15 @@ public class OrderServiceEndToEndTest {
         @Test
         @DirtiesContext
         void createOrder_givenOrderDTOIsValidAndRegisterCustomerIdExist_thenReturnTheNewOrderDTO(){
-            OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO, userDTO.getId());
+            OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO);
 
             OrderDTO orderDTO = RestAssured.given()
 
                     .accept(JSON)
                     .contentType(JSON)
+                    .auth()
+                    .preemptive()
+                    .basic(userDTO.getId().toString(),userCreateDTO.getPassword())
                     .body(orderCreateDTO)
                     .when()
                     .port(port)
@@ -102,31 +109,37 @@ public class OrderServiceEndToEndTest {
         }
     @Test
     @DirtiesContext
-    void createOrder_givenOrderDTOIsValidAndRegisterCustomerIdDoesNotExist_thenReturnStatus404(){
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO, UUID.randomUUID());
-
+    void createOrder_givenUserHasNotTheRights_thenReturnStatus400(){
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(listItemGroupCreateDTO);
         RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .body(orderCreateDTO)
                 .when()
                 .port(port)
                 .post(PATH)
                 .then()
                 .assertThat()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
 
     }
+
     @Test
     @DirtiesContext
     void createOrder_givenOrderDTOIsValidButIdItemDoesNotExistAndRegisterCustomerIdExist_thenReturnStatus404(){
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(UUID.randomUUID(),3)), userDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(UUID.randomUUID(),3)));
         RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(userDTO.getId().toString(),userCreateDTO.getPassword())
                 .body(orderCreateDTO)
                 .when()
                 .port(port)
@@ -140,11 +153,14 @@ public class OrderServiceEndToEndTest {
     @DirtiesContext
     void createOrder_givenOrderDTOIsNotValidButIdItemDoesNotExistAndRegisterCustomerIdExist_thenReturnStatus406(){
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(null,-1)), userDTO.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(new ItemGroupCreateDTO(null,-1)));
         RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(userDTO.getId().toString(),userCreateDTO.getPassword())
                 .body(orderCreateDTO)
                 .when()
                 .port(port)

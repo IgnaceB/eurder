@@ -11,9 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
+import switchfully.com.eurder.users.User;
+import switchfully.com.eurder.users.UserRepository;
+import switchfully.com.eurder.users.dto.UserCreateDTO;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -31,8 +35,12 @@ public class ItemServiceEndToEndTest {
     private ItemRepository itemRepository;
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private UserRepository userRepository;
 
     private ItemController itemController;
+    private static final String ADMIN_ID ="33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
+    private static final String ADMIN_MDP = "mdp";
 
     @BeforeEach
     void setUp(){
@@ -40,13 +48,16 @@ public class ItemServiceEndToEndTest {
     }
     @Test
     @DirtiesContext
-    void createItem_givenItemDTOIsValid_thenReurnTheNewItemDTO(){
+    void createItem_givenItemDTOIsValid_thenReturnTheNewItemDTO(){
         ItemCreateDTO itemCreateDTO = new ItemCreateDTO("nameTest","descriptionTest",10.00,5);
 
         ItemDTO itemDTO = RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .body(itemCreateDTO)
                 .when()
                 .port(port)
@@ -81,6 +92,9 @@ public class ItemServiceEndToEndTest {
 
                 .accept(JSON)
                 .contentType(JSON)
+               .auth()
+               .preemptive()
+               .basic(ADMIN_ID,ADMIN_MDP)
                 .body(itemCreateDTO)
                 .when()
                 .port(port)
@@ -92,6 +106,30 @@ public class ItemServiceEndToEndTest {
                .as(HashMap.class);
 
        Assertions.assertThat(errorsMap).containsAllEntriesOf(getExpectedMapForFullyInvalidCreateUserDTO());
+
+    }
+    @Test
+    @DirtiesContext
+    void createItem_givenUserHasNotTheRights_thenReturnStatus400(){
+        ItemCreateDTO itemCreateDTO = new ItemCreateDTO("nameTest","descriptionTest",10.00,5);
+        UserCreateDTO userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
+        User unauthorizedUser = userRepository.createCustomer(userCreateDTO);
+        RestAssured.given()
+
+                .accept(JSON)
+                .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(unauthorizedUser.getId().toString(),userCreateDTO.getPassword())
+                .body(itemCreateDTO)
+                .when()
+                .port(port)
+                .post(PATH)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+
 
     }
 

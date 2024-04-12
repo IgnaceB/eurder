@@ -65,7 +65,8 @@ class OrderServiceUnitTest {
         ItemGroupCreateDTO itemGroup1CreateDTO = new ItemGroupCreateDTO(item1.getId(), item1.getAmount());
         ItemGroupCreateDTO itemGroup2CreateDTO = new ItemGroupCreateDTO(item1.getId(), item1.getAmount());
 
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroup1CreateDTO, itemGroup2CreateDTO), user1.getId());
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroup1CreateDTO, itemGroup2CreateDTO));
+        orderCreateDTO.updateIdUser(user1.getId());
         Order order = new Order(newArrayList(itemGroup1, itemGroup2), user1.getId(), 100.00);
         OrderDTO orderDTO = new OrderDTO(order.getId(), order.getListItemGroup(), order.getUserId(), order.getTotalPrice());
 

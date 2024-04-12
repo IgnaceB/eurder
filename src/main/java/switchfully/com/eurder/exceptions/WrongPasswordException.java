@@ -1,4 +1,4 @@
-package switchfully.com.eurder.security;
+package switchfully.com.eurder.exceptions;
 
 public class WrongPasswordException extends RuntimeException {
     public WrongPasswordException() {

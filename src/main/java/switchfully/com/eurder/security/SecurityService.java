@@ -1,5 +1,7 @@
 package switchfully.com.eurder.security;
 
+import switchfully.com.eurder.exceptions.UnauthorizedException;
+import switchfully.com.eurder.exceptions.WrongPasswordException;
 import switchfully.com.eurder.users.User;
 import switchfully.com.eurder.users.UserRepository;
 
@@ -25,7 +27,7 @@ public class SecurityService {
         this.userRepository = userRepository;
     }
 
-/*    public void verifyAuthorization(String authorization, Feature feature) {
+    public void verifyAuthorization(String authorization, Feature feature) {
         IdPassword idPassword = getIdPassword(authorization);
         User user = userRepository
                 .getOneCustomerById(idPassword.getUserId())
@@ -35,12 +37,12 @@ public class SecurityService {
             throw new WrongPasswordException();
         }
         if (!user.canHaveAccessTo(feature)) {
-            logger.error("User " + idPassword.getIdAddress() + " does not have access to " + feature);
+            logger.error("User " + idPassword.getUserId() + " does not have access to " + feature);
             throw new UnauthorizedException();
         }
-    }*/
+    }
 
-    private IdPassword getIdPassword(String authorization) {
+    public IdPassword getIdPassword(String authorization) {
         if (!authorization.contains("Basic ")) {
             logger.warn("User tried to log using the wrong authorization protocol");
             throw new IllegalArgumentException("Authorization is not valid");

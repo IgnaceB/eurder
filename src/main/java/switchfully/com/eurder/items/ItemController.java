@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import switchfully.com.eurder.security.Feature;
+import switchfully.com.eurder.security.SecurityService;
 import switchfully.com.eurder.users.UserController;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
@@ -17,10 +19,13 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private SecurityService securityService;
 
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDTO createItem(@Valid @RequestBody ItemCreateDTO itemCreateDTO){
+    public ItemDTO createItem(@RequestHeader( value = "Authorization") String auth,@Valid @RequestBody ItemCreateDTO itemCreateDTO){
+        securityService.verifyAuthorization(auth, Feature.VIEW_ONE_CUSTOMER);
         return itemService.createItem(itemCreateDTO);
     }
 

@@ -18,7 +18,7 @@ public class OrderCreateDTO {
 /*    @NotBlank(message = "ListItemGroupCreateDTO must be provided")*/
     @NotNull
     private List<@Valid ItemGroupCreateDTO> listItemGroupCreateDTO;
-    @NotNull
+
     private UUID userId;
 
 
@@ -27,9 +27,12 @@ public class OrderCreateDTO {
         this.listItemGroupCreateDTO=newArrayList();
     }
 
-    public OrderCreateDTO(List<@Valid ItemGroupCreateDTO> listItemGroupCreateDTO,UUID userId) {
+    public OrderCreateDTO(List<@Valid ItemGroupCreateDTO> listItemGroupCreateDTO) {
         this.listItemGroupCreateDTO=newArrayList(listItemGroupCreateDTO);
-        this.userId=userId;
 
+
+    }
+    public void updateIdUser(UUID userId){
+        this.userId=userId;
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import switchfully.com.eurder.exceptions.CustomerNotFoundException;
+import switchfully.com.eurder.exceptions.UnauthorizedException;
+import switchfully.com.eurder.exceptions.WrongPasswordException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,6 +44,18 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
     public void customerNotFoundException(CustomerNotFoundException exception, HttpServletResponse response) throws IOException{
         this.logger.error(exception.getMessage());
         response.sendError(HttpStatus.NOT_FOUND.value(),exception.getMessage());
+    }
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void UnauthorizedException(UnauthorizedException exception, HttpServletResponse response) throws IOException {
+        this.logger.error(exception.getMessage());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(),exception.getMessage());
+    }
+    @ExceptionHandler(WrongPasswordException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void WrongPasswordException(WrongPasswordException exception, HttpServletResponse response) throws IOException {
+        this.logger.error(exception.getMessage());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(),exception.getMessage());
     }
 
 

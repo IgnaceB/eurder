@@ -36,6 +36,8 @@ public class UserServiceEndToEndTest {
     private UserService userService;
 
     private UserController userController;
+    private static final String ADMIN_ID= "33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
+    private static final String ADMIN_MDP = "mdp";
 
     @BeforeEach
     void setUp(){
@@ -112,6 +114,9 @@ public class UserServiceEndToEndTest {
                 .accept(JSON)
                 .when()
                 .port(port)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .get(PATH)
                 .then()
                 .assertThat()
@@ -126,6 +131,29 @@ public class UserServiceEndToEndTest {
     }
     @Test
     @DirtiesContext
+    void getAllCustomer_givenUnauthorizedUser_thenReturnStatus400(){
+        UserCreateDTO createCustomer1=new UserCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1","mdp");
+
+        User user1 = userRepository.createCustomer(createCustomer1);
+
+     RestAssured.given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .auth()
+                .preemptive()
+                .basic(user1.getId().toString(),createCustomer1.getPassword())
+                .get(PATH)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+
+
+
+    }
+    @Test
+    @DirtiesContext
     void getOneCustomerById_givenCustomerIdExistInRepository_thenReturnCustomerDTO(){
         UserCreateDTO createCustomer1=new UserCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1","mdp");
         UserCreateDTO createCustomer2=new UserCreateDTO("firstNameCustomer2","LastNameCustomer2","emailCustomer2","AddressCustomer2","phoneNumberCustomer2","mdp");
@@ -135,6 +163,9 @@ public class UserServiceEndToEndTest {
         UserDTO userDTO = RestAssured
                 .given()
                 .accept(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .when()
                 .port(port)
                 .get(PATH+"/"+ user1.getId().toString())
@@ -153,6 +184,9 @@ public class UserServiceEndToEndTest {
         RestAssured
                 .given()
                 .accept(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .when()
                 .port(port)
                 .get(PATH+"/"+fakeId.toString())
@@ -166,12 +200,38 @@ public class UserServiceEndToEndTest {
         RestAssured
                 .given()
                 .accept(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
                 .when()
                 .port(port)
                 .get(PATH+"/thisIsNotAnUUID")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+    @Test
+    @DirtiesContext
+    void getOneCustomerById_givenUnauthorizedUser_thenReturnStatus400(){
+        UserCreateDTO createCustomer1=new UserCreateDTO("firstNameCustomer1","LastNameCustomer1","emailCustomer1","AddressCustomer1","phoneNumberCustomer1","mdp");
+
+        User user1 = userRepository.createCustomer(createCustomer1);
+
+        RestAssured.given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .auth()
+                .preemptive()
+                .basic(user1.getId().toString(),createCustomer1.getPassword())
+                .get(PATH+"/"+ user1.getId().toString())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+
+
 
     }
 }
