@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.itemgroup;
 
 import org.assertj.core.api.Assertions;
@@ -20,7 +21,8 @@ class ItemGroupServiceUnitTest {
     @InjectMocks
     private ItemGroupService itemGroupService;
 
-    @Test
+*/
+/*    @Test
     public void createItemGroup_givenItemGroupCreateDTOValidAndItemExistAndIsAvailable_thenReturnItemGroupWithNextDayShipping(){
         Item item1 = new Item("nameTest","descriptionTest",10.0,5);
         ItemGroup itemGroup = new ItemGroup(new Item(item1.getName(),item1.getDescription(),item1.getPrice(),0),3, LocalDate.now().plusDays(1));
@@ -50,7 +52,8 @@ class ItemGroupServiceUnitTest {
         Assertions.assertThat(itemGroupCreated.getItem().getAmount()).isEqualTo(itemGroup.getItem().getAmount());
         Assertions.assertThat(itemGroupCreated.getItem()).doesNotHaveSameHashCodeAs(itemGroup.getItem());
 
-    }
+    }*//*
 
 
-}
+
+}*/

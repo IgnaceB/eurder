@@ -1,5 +1,6 @@
 package switchfully.com.eurder.items;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 
@@ -11,9 +12,9 @@ import java.util.UUID;
 import static com.google.common.collect.Lists.newArrayList;
 
 @Repository
-public class ItemRepository {
+public interface ItemRepository extends JpaRepository<Item,UUID> {
 
-    List<Item> items;
+/*    List<Item> items;
 
     public ItemRepository() {
         this.items=newArrayList();
@@ -40,5 +41,5 @@ public class ItemRepository {
        return this.items.stream()
                 .filter(item -> item.getId().equals(itemId))
                 .findFirst();
-    }
+    }*/
 }

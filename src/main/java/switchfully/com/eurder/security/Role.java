@@ -10,12 +10,17 @@ public enum Role {
     CUSTOMER(newArrayList(Feature.ORDER_ITEMS));
 
 
-    List<Feature> featureList;
+    private List<Feature> featureList;
+
+    Role() {
+    }
      Role(List<Feature> featureList) {
         this.featureList=featureList;
      }
 
-     public boolean isAllowedToFeature(Feature feature){
+
+
+    public boolean isAllowedToFeature(Feature feature){
          return featureList.contains(feature);
      }
 }

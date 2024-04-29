@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping (produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createCustomer(@Valid @RequestBody UserCreateDTO userCreateDTO){
+    public UUID createCustomer(@Valid @RequestBody UserCreateDTO userCreateDTO){
         return userService.createCustomer(userCreateDTO);
     }
 
@@ -42,7 +42,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDTO getOneCustomerById(@RequestHeader(value = "Authorization") String auth,@PathVariable UUID customerId){
         securityService.verifyAuthorization(auth, Feature.VIEW_ONE_CUSTOMER);
-        return userService.getOneCustomerByID(customerId);
+        return userService.getOneCustomerDTOByID(customerId);
     }
 
 }

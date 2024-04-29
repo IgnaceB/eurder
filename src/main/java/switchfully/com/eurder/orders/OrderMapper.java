@@ -2,9 +2,16 @@ package switchfully.com.eurder.orders;
 
 import org.springframework.stereotype.Component;
 import switchfully.com.eurder.orders.dto.OrderDTO;
+import switchfully.com.eurder.users.User;
+
+import java.util.UUID;
+
 @Component
 public class OrderMapper {
-    public OrderDTO toDto(Order order) {
-       return new OrderDTO(order.getId(),order.getListItemGroup(),order.getUserId(), order.getTotalPrice());
+    public OrderDTO toDTO(Order order, double totalPrice) {
+       return new OrderDTO(order.getId(), totalPrice);
+    }
+    public Order createToOrder(User user){
+        return new Order(UUID.randomUUID(),user);
     }
 }

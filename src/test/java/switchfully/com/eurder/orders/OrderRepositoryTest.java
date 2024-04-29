@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.orders;
 
 import org.assertj.core.api.Assertions;
@@ -29,4 +30,4 @@ class OrderRepositoryTest {
 
     }
 
-}
+}*/

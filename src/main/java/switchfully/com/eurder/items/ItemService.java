@@ -1,5 +1,6 @@
 package switchfully.com.eurder.items;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import switchfully.com.eurder.exceptions.ItemNotFoundException;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
@@ -8,6 +9,7 @@ import switchfully.com.eurder.items.dto.ItemDTO;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ItemService {
 
     ItemRepository itemRepository;
@@ -18,12 +20,13 @@ public class ItemService {
         this.itemMapper = itemMapper;
     }
 
-    public ItemDTO createItem(ItemCreateDTO itemCreateDTO) {
-        return itemMapper.toDto(
-                itemRepository.createItem(itemCreateDTO));
+    public UUID createItem(ItemCreateDTO itemCreateDTO) {
+        return itemRepository.save(
+                        itemMapper.toItem(itemCreateDTO)).getId();
     }
 
     public Item getOneItemById(UUID itemId) {
-        return itemRepository.getOneItemById(itemId).orElseThrow(ItemNotFoundException::new);
+        return itemRepository.findById(itemId)
+                .orElseThrow(()-> new ItemNotFoundException("item not found"));
     }
 }

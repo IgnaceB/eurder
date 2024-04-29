@@ -21,7 +21,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDTO createOrder(@RequestHeader(value="Authorization") String auth,@Valid @RequestBody OrderCreateDTO orderCreateDTO){
         securityService.verifyAuthorization(auth, Feature.ORDER_ITEMS);
-        orderCreateDTO.updateIdUser(securityService.getIdPassword(auth).getUserId());
-        return orderService.createOrder(orderCreateDTO);
+        return orderService.createOrder(orderCreateDTO, securityService.getIdPassword(auth).getUserId());
+
     }
 }

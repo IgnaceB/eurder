@@ -19,20 +19,13 @@ public class OrderCreateDTO {
     @NotNull
     private List<@Valid ItemGroupCreateDTO> listItemGroupCreateDTO;
 
-    private UUID userId;
 
-
-
-    public OrderCreateDTO() {
-        this.listItemGroupCreateDTO=newArrayList();
+   public OrderCreateDTO() {
     }
 
     public OrderCreateDTO(List<@Valid ItemGroupCreateDTO> listItemGroupCreateDTO) {
         this.listItemGroupCreateDTO=newArrayList(listItemGroupCreateDTO);
 
+    }
 
-    }
-    public void updateIdUser(UUID userId){
-        this.userId=userId;
-    }
 }

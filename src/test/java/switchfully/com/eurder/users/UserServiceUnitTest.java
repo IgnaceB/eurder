@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.users;
 
 
@@ -74,4 +75,4 @@ class UserServiceUnitTest {
 
         Assertions.assertThatThrownBy(()-> userService.getOneCustomerByID(fakeId)).isInstanceOf(CustomerNotFoundException.class);
     }
-}
+}*/

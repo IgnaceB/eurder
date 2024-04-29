@@ -1,6 +1,9 @@
 package switchfully.com.eurder.orders;
 
+import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import switchfully.com.eurder.users.User;
 import switchfully.com.eurder.users.UserService;
 import switchfully.com.eurder.users.dto.UserDTO;
 import switchfully.com.eurder.itemgroup.ItemGroup;
@@ -9,8 +12,11 @@ import switchfully.com.eurder.orders.dto.OrderCreateDTO;
 import switchfully.com.eurder.orders.dto.OrderDTO;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderService {
 
     private OrderMapper orderMapper;
@@ -25,21 +31,27 @@ public class OrderService {
         this.userService = userService;
     }
 
-    public OrderDTO createOrder(OrderCreateDTO orderCreateDTO) {
-        List<ItemGroup> listItemGroup = createItemGroups(orderCreateDTO);
 
-        UserDTO customerData = userService.getOneCustomerByID(orderCreateDTO.getUserId());
-        Order order = orderRepository.createOrder(listItemGroup,customerData.getId(),calculateTotalPrice(listItemGroup));
-        return orderMapper.toDto(order);
+    //SRP not ok -> how could I keep my SRP when the ItemGroups entries have to be created inside the order
+    public OrderDTO createOrder(OrderCreateDTO orderCreateDTO, UUID userId) {
+        User user = userService.getOneCustomerById(userId);
+
+        Order order = orderMapper.createToOrder(user);
+        orderRepository.save(order);
+
+        List<ItemGroup> listItemGroup = createItemGroups(orderCreateDTO, order);
+
+
+        return orderMapper.toDTO(order,calculateTotalPrice(listItemGroup));
 
 
     }
 
-    protected List<ItemGroup> createItemGroups(OrderCreateDTO orderCreateDTO) {
-        return orderCreateDTO.getListItemGroupCreateDTO()
-                .stream()
-                .map(itemCreateGroupDTO->itemGroupService.createItemGroup(itemCreateGroupDTO))
+    private List<ItemGroup> createItemGroups(OrderCreateDTO orderCreateDTO, Order order) {
+        List<ItemGroup> listItemGroup = orderCreateDTO.getListItemGroupCreateDTO().stream()
+                .map(itemGroupCreateDTO -> itemGroupService.createItemGroup(itemGroupCreateDTO, order))
                 .toList();
+        return listItemGroup;
     }
 
     protected double calculateTotalPrice(List<ItemGroup> listItemGroup) {

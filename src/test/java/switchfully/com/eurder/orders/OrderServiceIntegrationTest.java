@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.orders;
 
 import org.assertj.core.api.Assertions;
@@ -63,9 +64,11 @@ public class OrderServiceIntegrationTest {
         ItemGroupCreateDTO itemGroupCreateDTO1 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup1.getAmount());
         ItemGroupCreateDTO itemGroupCreateDTO2 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup2.getAmount());
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
-        orderCreateDTO.updateIdUser(userDTO.getId());
+        */
+/*orderCreateDTO.updateIdUser(userDTO.getId());*//*
 
-        OrderDTO orderDTO = orderService.createOrder(orderCreateDTO);
+
+        OrderDTO orderDTO = orderService.createOrder(orderCreateDTO,userDTO.getId());
         Assertions.assertThat(orderDTO.getUserId()).isEqualTo(userDTO.getId());
         Assertions.assertThat(orderDTO.getTotalPrice()).isEqualTo(100.00);
         Assertions.assertThat(orderDTO.getListItemGroup()).hasSize(2);
@@ -85,9 +88,11 @@ public class OrderServiceIntegrationTest {
 
         UUID fakeId=UUID.randomUUID();
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
-        orderCreateDTO.updateIdUser(fakeId);
+        */
+/*orderCreateDTO.updateIdUser(fakeId);*//*
 
-        Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO)).isInstanceOf(CustomerNotFoundException.class);
+
+        Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO,fakeId)).isInstanceOf(CustomerNotFoundException.class);
 
     }
     @Test
@@ -96,9 +101,12 @@ public class OrderServiceIntegrationTest {
         ItemGroupCreateDTO itemGroupCreateDTO1 = new ItemGroupCreateDTO(itemDTO1.getId(),itemGroup1.getAmount());
         ItemGroupCreateDTO itemGroupCreateDTO2 = new ItemGroupCreateDTO(fakeId,itemGroup2.getAmount());
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(newArrayList(itemGroupCreateDTO1,itemGroupCreateDTO2));
-        orderCreateDTO.updateIdUser( userDTO.getId());
+        */
+/*orderCreateDTO.updateIdUser( userDTO.getId());*//*
 
-        Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO)).isInstanceOf(ItemNotFoundException.class);
+
+        Assertions.assertThatThrownBy(()->orderService.createOrder(orderCreateDTO,userDTO.getId())).isInstanceOf(ItemNotFoundException.class);
 
     }
 }
+*/

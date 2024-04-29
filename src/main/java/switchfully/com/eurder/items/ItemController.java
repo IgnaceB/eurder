@@ -12,6 +12,8 @@ import switchfully.com.eurder.users.UserController;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(path = "/items")
 public class ItemController {
@@ -24,7 +26,7 @@ public class ItemController {
 
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDTO createItem(@RequestHeader( value = "Authorization") String auth,@Valid @RequestBody ItemCreateDTO itemCreateDTO){
+    public UUID createItem(@RequestHeader( value = "Authorization") String auth, @Valid @RequestBody ItemCreateDTO itemCreateDTO){
         securityService.verifyAuthorization(auth, Feature.VIEW_ONE_CUSTOMER);
         return itemService.createItem(itemCreateDTO);
     }

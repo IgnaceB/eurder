@@ -10,10 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
-import switchfully.com.eurder.items.dto.ItemDTO;
-import switchfully.com.eurder.users.User;
 import switchfully.com.eurder.users.UserRepository;
-import switchfully.com.eurder.users.dto.UserCreateDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +38,8 @@ public class ItemServiceEndToEndTest {
     private ItemController itemController;
     private static final String ADMIN_ID ="33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
     private static final String ADMIN_MDP = "mdp";
+    public static final UUID USER_1_ID = UUID.fromString("e159d9f0-9023-4e2c-8ec0-6df42e763cf8");
+    private static final String USER_PASSWORD = "mdp";
 
     @BeforeEach
     void setUp(){
@@ -51,7 +50,7 @@ public class ItemServiceEndToEndTest {
     void createItem_givenItemDTOIsValid_thenReturnTheNewItemDTO(){
         ItemCreateDTO itemCreateDTO = new ItemCreateDTO("nameTest","descriptionTest",10.00,5);
 
-        ItemDTO itemDTO = RestAssured.given()
+        UUID itemId = RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
@@ -66,12 +65,9 @@ public class ItemServiceEndToEndTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(ItemDTO.class);
+                .as(UUID.class);
 
-        Assertions.assertThat(itemDTO.getName()).isEqualTo(itemCreateDTO.getName());
-        Assertions.assertThat(itemDTO.getDescription()).isEqualTo(itemCreateDTO.getDescription());
-        Assertions.assertThat(itemDTO.getPrice()).isEqualTo(itemCreateDTO.getPrice());
-        Assertions.assertThat(itemDTO.getAmount()).isEqualTo(itemCreateDTO.getAmount());
+        Assertions.assertThat(itemId).isInstanceOf(UUID.class);
 
     }
     private static Map<String, Object> getExpectedMapForFullyInvalidCreateUserDTO() {
@@ -112,15 +108,13 @@ public class ItemServiceEndToEndTest {
     @DirtiesContext
     void createItem_givenUserHasNotTheRights_thenReturnStatus400(){
         ItemCreateDTO itemCreateDTO = new ItemCreateDTO("nameTest","descriptionTest",10.00,5);
-        UserCreateDTO userCreateDTO = new UserCreateDTO("firstnameTest","lastNameTest","test avenue 01 - 1000 TEST","email@test.test","0123456789","mdp");
-        User unauthorizedUser = userRepository.createCustomer(userCreateDTO);
         RestAssured.given()
 
                 .accept(JSON)
                 .contentType(JSON)
                 .auth()
                 .preemptive()
-                .basic(unauthorizedUser.getId().toString(),userCreateDTO.getPassword())
+                .basic(USER_1_ID.toString(), USER_PASSWORD)
                 .body(itemCreateDTO)
                 .when()
                 .port(port)

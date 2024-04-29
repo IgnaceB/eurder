@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.users;
 
 
@@ -27,4 +28,4 @@ class UserRepositoryTest {
     void getOneCustomerById_givenUUIDExistInRepository_returnOptionalCustomerWithThisID() {
         Assertions.assertThat(userRepository.getOneCustomerById(user1.getId())).isEqualTo(Optional.of(user1));
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package switchfully.com.eurder.users;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import switchfully.com.eurder.security.Role;
 import switchfully.com.eurder.users.dto.UserCreateDTO;
@@ -12,8 +13,8 @@ import java.util.stream.Collectors;
 import static com.google.common.collect.Lists.newArrayList;
 
 @Repository
-public class UserRepository {
-    private List<User> users;
+public interface UserRepository extends JpaRepository<User, UUID> {
+/*    private List<User> users;
     private static final User ADMIN = new User(UUID.fromString("33f10c8b-7795-4fbc-adc3-cdea73f4fd4e"),"admin","admin","admin@admin","addressAdmin","dontCall","mdp",Role.ADMIN);
 
     public UserRepository() {
@@ -45,5 +46,5 @@ public class UserRepository {
         return this.users.stream()
                 .filter(customer -> customer.getId().equals(customerId))
                 .findFirst();
-    }
+    }*/
 }

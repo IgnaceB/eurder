@@ -1,24 +1,31 @@
 package switchfully.com.eurder.orders;
 
+import jakarta.persistence.*;
 import switchfully.com.eurder.itemgroup.ItemGroup;
+import switchfully.com.eurder.users.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name="orders")
 public class Order {
 
+    @Id
+    @Column(name = "id")
     private UUID id;
-    private List<ItemGroup> listItemGroup;
-    private UUID userId;
 
-    private double totalPrice;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User user;
 
-    public Order(List<ItemGroup> listItemGroup, UUID userId, double totalPrice) {
-        this.id=UUID.randomUUID();
-        this.listItemGroup = listItemGroup;
-        this.userId = userId;
-        this.totalPrice = totalPrice;
+    public Order(UUID id, User user) {
+        this.id = id;
+        this.user = user;
+    }
+
+    public Order() {
 
     }
 
@@ -26,15 +33,7 @@ public class Order {
         return id;
     }
 
-    public List<ItemGroup> getListItemGroup() {
-        return listItemGroup;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
+    public User getUser() {
+        return user;
     }
 }

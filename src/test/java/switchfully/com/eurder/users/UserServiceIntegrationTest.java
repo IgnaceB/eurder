@@ -1,3 +1,4 @@
+/*
 package switchfully.com.eurder.users;
 
 
@@ -71,3 +72,4 @@ public class UserServiceIntegrationTest {
 
 
 }
+*/

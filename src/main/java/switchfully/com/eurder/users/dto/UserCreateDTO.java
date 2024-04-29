@@ -1,14 +1,14 @@
 package switchfully.com.eurder.users.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import switchfully.com.eurder.utils.Name;
 
 @Data
 public class UserCreateDTO {
-    @NotBlank(message = "First name must be provided")
-    private String firstName;
-    @NotBlank(message = "Last name must be provided")
-    private String lastName;
+    @NotNull()
+    private @Valid Name name;
     @NotBlank(message = "address must be provided")
     @Size(min=5, max=100,message = "address must have at least 5 letters, maximum 100 letters")
     private String address;
@@ -23,12 +23,11 @@ public class UserCreateDTO {
     private String password;
 
 
-    public UserCreateDTO(String firstName, String lastName, String address, String emailAddress, String phoneNumber, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserCreateDTO(switchfully.com.eurder.utils.Name name, String address, String emailAddress, String phoneNumber, String password) {
+        this.name = name;
         this.address = address;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
-        this.password=password;
+        this.password = password;
     }
 }

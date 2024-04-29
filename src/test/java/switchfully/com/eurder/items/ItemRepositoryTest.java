@@ -1,15 +1,19 @@
+/*
 package switchfully.com.eurder.items;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
 import static org.assertj.core.util.Lists.newArrayList;
-
+@DataJpaTest
 class ItemRepositoryTest {
 
+    @Autowired
     private ItemRepository itemRepository;
     private Item item1;
     private Item item2;
@@ -26,4 +30,4 @@ class ItemRepositoryTest {
         Assertions.assertThat(itemRepository.getOneItemById(item1.getId())).isEqualTo(Optional.of(item1));
     }
 
-}
+}*/

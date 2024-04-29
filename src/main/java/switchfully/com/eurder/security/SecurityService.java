@@ -30,8 +30,9 @@ public class SecurityService {
     public void verifyAuthorization(String authorization, Feature feature) {
         IdPassword idPassword = getIdPassword(authorization);
         User user = userRepository
-                .getOneCustomerById(idPassword.getUserId())
+                .findById(idPassword.getUserId())
                 .orElseThrow(()->new CustomerNotFoundException("Wrong ID"));
+
         if (!user.getPassword().equals(idPassword.getPassword())) {
             logger.error("Password does not match for user " + idPassword.getUserId());
             throw new WrongPasswordException();

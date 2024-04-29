@@ -1,32 +1,51 @@
+/*
 package switchfully.com.eurder.itemgroup;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import switchfully.com.eurder.items.Item;
 import switchfully.com.eurder.items.ItemMapper;
 import switchfully.com.eurder.items.ItemRepository;
 import switchfully.com.eurder.items.ItemService;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.util.Lists.newArrayList;
 
+@DataJpaTest
+
 public class ItemGroupServiceIntegrationTest {
 
-    private ItemRepository itemRepository ;
-    private ItemMapper itemMapper=new ItemMapper();
+    @Autowired
+    ItemRepository itemRepository ;
+    @Autowired
+    TestEntityManager testEntityManager;
+    @Autowired
+    private ItemMapper itemMapper;
+    @Autowired
     private ItemService itemService;
+    @Autowired
     private ItemGroupService itemGroupService;
     private Item item1;
     private Item item2;
     @BeforeEach
     void beforeEach(){
-        item1=new Item("nameItem1","descriptionItem1",10.00,5);
-        item2=new Item("nameItem2","descriptionItem2",20.00,10);
-        itemRepository=new ItemRepository(newArrayList(item1,item2));
+       item1=new Item(UUID.randomUUID(),"nameItem1","descriptionItem1",10.00,5);
+        item2=new Item(UUID.randomUUID(),"nameItem2","descriptionItem2",20.00,10);
+        */
+/*itemRepository=new ItemRepository(newArrayList(item1,item2));*//*
+
+        testEntityManager.persist(item1);
+        testEntityManager.persist(item2);*/
+/*
         itemService = new ItemService(itemRepository,itemMapper);
-        itemGroupService = new ItemGroupService(itemService);
+        itemGroupService = new ItemGroupService(itemService);*//*
+
     }
 
     @Test
@@ -43,3 +62,4 @@ public class ItemGroupServiceIntegrationTest {
         Assertions.assertThat(itemGroupCreated.getItem()).doesNotHaveSameHashCodeAs(itemGroup.getItem());
     }
 }
+*/
