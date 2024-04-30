@@ -24,12 +24,13 @@ public class ItemGroupService {
 
     public ItemGroup createItemGroup(ItemGroupCreateDTO itemGroupCreateDTO, Order order) {
         Item item = itemService.getOneItemById(itemGroupCreateDTO.getItemId());
-        ItemGroup itemGroupToSave = new ItemGroup(UUID.randomUUID(),item,item.getPrice(),itemGroupCreateDTO.getAmountOrdered(),calculateShippingDate(item.getAmount(), itemGroupCreateDTO.getAmountOrdered()),order);
+        LocalDate shippingDate = calculateShippingDate(item.getAmount(),itemGroupCreateDTO.getAmountOrdered());
+        ItemGroup itemGroupToSave = new ItemGroup(UUID.randomUUID(),item,item.getPrice(),itemGroupCreateDTO.getAmountOrdered(),shippingDate,order);
         return  itemGroupRepository.save(itemGroupToSave);
     }
 
 
-    private LocalDate calculateShippingDate(int amount, int amountOrdered) {
+    public LocalDate calculateShippingDate(int amount, int amountOrdered) {
         if (amount>amountOrdered){
             return LocalDate.now().plusDays(DAYS_BEFORE_SHIPPING_ITEM_IN_STOCK);
         }
