@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -54,4 +55,5 @@ public class Item {
     public int getAmount() {
         return amount;
     }
+
 }

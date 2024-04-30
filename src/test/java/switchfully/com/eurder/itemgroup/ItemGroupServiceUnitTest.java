@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import switchfully.com.eurder.itemgroup.DTO.ItemGroupCreateDTO;
 import switchfully.com.eurder.items.Item;
 import switchfully.com.eurder.items.ItemService;
 import switchfully.com.eurder.orders.Order;

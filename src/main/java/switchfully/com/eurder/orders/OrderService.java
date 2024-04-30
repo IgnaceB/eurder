@@ -46,6 +46,15 @@ public class OrderService {
 
 
     }
+/*    public List<Order> getAllOrdersFromOneCustomer(UUID userId){
+        User user = userService.getOneCustomerById(userId);
+        return orderRepository.findByCustomer_id(userId);
+    }*/
+
+    // How to handle this ? Should I store the totalAmount inside my Order ?
+    public OrderDTO orderToDTO(Order order, List<ItemGroup> listItemGroup){
+        return orderMapper.toDTO(order,calculateTotalPrice(listItemGroup));
+    }
 
     private List<ItemGroup> createItemGroups(OrderCreateDTO orderCreateDTO, Order order) {
         List<ItemGroup> listItemGroup = orderCreateDTO.getListItemGroupCreateDTO().stream()
@@ -54,7 +63,7 @@ public class OrderService {
         return listItemGroup;
     }
 
-    protected double calculateTotalPrice(List<ItemGroup> listItemGroup) {
+    private double calculateTotalPrice(List<ItemGroup> listItemGroup) {
         return listItemGroup.stream()
                 .map(ItemGroup::calculateTotalPriceOfTheGroup)
                 .mapToDouble(Double::doubleValue)

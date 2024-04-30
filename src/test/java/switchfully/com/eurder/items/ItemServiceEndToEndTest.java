@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
+import switchfully.com.eurder.items.dto.ItemUpdateDTO;
 import switchfully.com.eurder.users.UserRepository;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class ItemServiceEndToEndTest {
     public static final String HOST="http://localhost";
     public static final String PATH="/items";
+    public static final UUID ID_ITEM_1 = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
     @LocalServerPort
     private int port;
 
@@ -123,6 +125,47 @@ public class ItemServiceEndToEndTest {
                 .assertThat()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
 
+
+
+    }
+
+    @Test
+    @DirtiesContext
+    void updateItem_givenUpdateItemDTOCorrectAndUserHasRights_thenReturnStatus200(){
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO("newName","newDescription",25.00,50);
+        RestAssured.given()
+                .accept(JSON)
+                .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(ADMIN_ID,ADMIN_MDP)
+                .body(itemUpdateDTO)
+                .when()
+                .port(port)
+                .put(PATH+'/'+ID_ITEM_1)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value());
+
+
+    }
+    @Test
+    @DirtiesContext
+    void updateItem_givenUpdateItemDTOCorrectAndUserHasNoRights_thenReturnStatus200(){
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO("newName","newDescription",25.00,50);
+        RestAssured.given()
+                .accept(JSON)
+                .contentType(JSON)
+                .auth()
+                .preemptive()
+                .basic(USER_1_ID.toString(), USER_PASSWORD)
+                .body(itemUpdateDTO)
+                .when()
+                .port(port)
+                .put(PATH+'/'+ID_ITEM_1)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
 
 
     }

@@ -1,4 +1,4 @@
-package switchfully.com.eurder.itemgroup;
+package switchfully.com.eurder.itemgroup.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

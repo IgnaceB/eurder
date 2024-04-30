@@ -13,7 +13,7 @@ import switchfully.com.eurder.users.User;
 import switchfully.com.eurder.users.UserService;
 import switchfully.com.eurder.users.dto.UserDTO;
 import switchfully.com.eurder.itemgroup.ItemGroup;
-import switchfully.com.eurder.itemgroup.ItemGroupCreateDTO;
+import switchfully.com.eurder.itemgroup.DTO.ItemGroupCreateDTO;
 import switchfully.com.eurder.itemgroup.ItemGroupService;
 import switchfully.com.eurder.items.Item;
 import switchfully.com.eurder.orders.dto.OrderCreateDTO;

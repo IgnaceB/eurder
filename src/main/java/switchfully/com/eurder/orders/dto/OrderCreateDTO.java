@@ -1,15 +1,11 @@
 package switchfully.com.eurder.orders.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import switchfully.com.eurder.itemgroup.ItemGroupCreateDTO;
+import switchfully.com.eurder.itemgroup.DTO.ItemGroupCreateDTO;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 

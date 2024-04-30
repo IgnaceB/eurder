@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import switchfully.com.eurder.exceptions.ItemNotFoundException;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
-import switchfully.com.eurder.items.dto.ItemDTO;
+import switchfully.com.eurder.items.dto.ItemUpdateDTO;
 
 import java.util.UUID;
 
@@ -29,4 +29,17 @@ public class ItemService {
         return itemRepository.findById(itemId)
                 .orElseThrow(()-> new ItemNotFoundException("item not found"));
     }
+
+    public void updateItem(ItemUpdateDTO itemUpdateDTO, UUID itemId) {
+        Item itemToUpdate = getOneItemById(itemId);
+
+        itemToUpdate = new Item(
+                itemId,
+                itemUpdateDTO.getName(),
+                itemUpdateDTO.getDescription(),
+                itemUpdateDTO.getPrice(),
+                itemToUpdate.getAmount()
+        );
+    }
+
 }

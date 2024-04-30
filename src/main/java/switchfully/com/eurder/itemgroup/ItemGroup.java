@@ -68,7 +68,11 @@ public class ItemGroup {
     }
 
 
+    public String getItemName() {
+        return this.item.getName();
+    }
 
-
-
+    public Order getOrder() {
+        return this.order;
+    }
 }
