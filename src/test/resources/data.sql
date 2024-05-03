@@ -17,3 +17,8 @@ INSERT INTO orders(id, customer_id, creation_date)
 values ('09b0bab2-4825-4a69-a200-fe4f8bc80c56', 'e159d9f0-9023-4e2c-8ec0-6df42e763cf8', null),
        ('3437e383-a973-4d88-bc4f-6b26d7ad9bd9', 'e159d9f0-9023-4e2c-8ec0-6df42e763cf8', null);
 ;
+INSERT INTO item_groups(id, item_id, item_price, amount_ordered, shipping_date, order_id)
+values ('fc556654-34af-4b2b-bdeb-f27c64d89092', '550e8400-e29b-41d4-a716-446655440000',19.99,5,NOW(),'09b0bab2-4825-4a69-a200-fe4f8bc80c56'),
+       ('6ba7b810-9dad-11d1-80b4-00c04fd430c8', '550e8400-e29b-41d4-a716-446655440000',25.00,5,NOW(),'09b0bab2-4825-4a69-a200-fe4f8bc80c56'),
+        ('6eb0f8ec-2451-47e3-a73d-f315a2a1e976', '550e8400-e29b-41d4-a716-446655440000',19.99,5,NOW(),'3437e383-a973-4d88-bc4f-6b26d7ad9bd9');
+;

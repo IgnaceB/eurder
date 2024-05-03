@@ -30,23 +30,36 @@ public class ReportService {
         this.itemGroupService = itemGroupService;
     }
     public ReportsDTO getReportsFromOneUser(UUID userId){
-        List<ItemGroup> itemGroupList = itemGroupService.getItemGroupsFromOneUser(userId);
+
+        List<Report> reportList = createReports(itemGroupService.getItemGroupsFromOneUser(userId));
+
+        List<ReportDTO> listOfReportDTO = mapListOfReportToDTO(reportList);
+
+        return new ReportsDTO(listOfReportDTO, calculateTotalPriceOfReports(listOfReportDTO));
+
+    }
+
+    private static double calculateTotalPriceOfReports(List<ReportDTO> listOfReportDTO) {
+        return listOfReportDTO.stream()
+                .mapToDouble(reportDTO -> reportDTO.getOrderDTO().getTotalPrice())
+                .sum();
+    }
+
+    private List<ReportDTO> mapListOfReportToDTO(List<Report> reportList) {
+        return reportList.stream()
+                .map(report -> reportMapper.toDTO(orderService.orderToDTO(report.getOrder(), report.getItemGroups()),
+                        report.getItemGroups().stream()
+                                .map(itemGroup -> itemGroupService.itemGroupToDTO(itemGroup))
+                                .collect(Collectors.toList())))
+                .toList();
+    }
+
+    private static List<Report> createReports(List<ItemGroup> itemGroupList) {
         Map<Order, List<ItemGroup>> orderListMap = itemGroupList.stream()
                 .collect(Collectors.groupingBy(ItemGroup::getOrder));
         List<Report> reportList = newArrayList();
 
         orderListMap.forEach((key, value) -> reportList.add(new Report(key, value)));
-
-        List<ReportDTO> listOfReportDTO = reportList.stream()
-                .map(report -> reportMapper.toDTO(orderService.orderToDTO(report.getOrder(),report.getItemGroups()),
-                        report.getItemGroups().stream()
-                                .map(itemGroup -> itemGroupService.itemGroupToDTO(itemGroup))
-                                .collect(Collectors.toList())))
-                .toList();
-
-        return new ReportsDTO(listOfReportDTO,listOfReportDTO.stream()
-                .mapToDouble(reportDTO -> reportDTO.getOrderDTO().getTotalPrice())
-                .sum());
-
+        return reportList;
     }
 }
