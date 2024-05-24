@@ -11,11 +11,11 @@ import java.util.UUID;
 public class UserMapper {
     public UserDTO toDTO(User user) {
         return new UserDTO(user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
+                user.getName(),
                 user.getAddress(),
                 user.getEmailAddress(),
-                user.getPhoneNumber());
+                user.getPhoneNumber(),
+                user.getRole());
     }
     public User createToUser(UserCreateDTO userCreateDTO, Role role){
         return new User(UUID.randomUUID(),

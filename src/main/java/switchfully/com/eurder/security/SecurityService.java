@@ -48,7 +48,8 @@ public class SecurityService {
             logger.warn("User tried to log using the wrong authorization protocol");
             throw new IllegalArgumentException("Authorization is not valid");
         }
-        String decodedAuthorization = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
+        System.out.println(authorization);
+        String decodedAuthorization = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));;
         String idUser = decodedAuthorization.substring(0, decodedAuthorization.indexOf(":"));
         String password = decodedAuthorization.substring(decodedAuthorization.indexOf(":") + 1);
         return new IdPassword(UUID.fromString(idUser), password);

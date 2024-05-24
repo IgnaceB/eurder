@@ -1,6 +1,7 @@
 package switchfully.com.eurder.items;
 
 import io.restassured.RestAssured;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,8 @@ public class ItemServiceEndToEndTest {
     private ItemService itemService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     private ItemController itemController;
     private static final String ADMIN_ID ="33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
@@ -70,6 +73,8 @@ public class ItemServiceEndToEndTest {
                 .as(UUID.class);
 
         Assertions.assertThat(itemId).isInstanceOf(UUID.class);
+/*        Assertions.assertThat(entityManager.createQuery("select i from Item i where id=:id",Item.class).setParameter("id", itemId).getSingleResult())
+                .isEqualTo()*/
 
     }
     private static Map<String, Object> getExpectedMapForFullyInvalidCreateUserDTO() {

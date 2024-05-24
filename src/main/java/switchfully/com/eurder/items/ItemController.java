@@ -13,9 +13,11 @@ import switchfully.com.eurder.users.UserController;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
 import switchfully.com.eurder.items.dto.ItemDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200", "https://main--eurder-ignace.netlify.app/*"})
 @RequestMapping(path = "/items")
 public class ItemController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -36,6 +38,15 @@ public class ItemController {
     public void updateItem(@RequestHeader(value = "Authorization") String auth, @Valid @RequestBody ItemUpdateDTO itemUpdateDTO,@PathVariable(name = "idItem") UUID itemId){
         securityService.verifyAuthorization(auth, Feature.UPDATE_ONE_ITEM);
         itemService.updateItem(itemUpdateDTO, itemId );
+    }
+
+    @GetMapping(path="",produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDTO> getAllItems(/*@RequestHeader(value="Authorization") String auth*/){
+        System.out.println("carentre");
+/*        securityService.verifyAuthorization(auth, Feature.GET_ALL_ITEMS);*/
+        System.out.println(itemService.getAllItems());
+        return itemService.getAllItems();
     }
 
 }

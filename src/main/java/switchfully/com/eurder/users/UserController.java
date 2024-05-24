@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/customers")
+@CrossOrigin(origins = {"http://localhost:4200","https://main--eurder-ignace.netlify.app/*"})
 public class UserController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 

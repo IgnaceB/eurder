@@ -39,6 +39,7 @@ public class ReportControllerEndToEndTest {
     private static final String ADMIN_ID = "33f10c8b-7795-4fbc-adc3-cdea73f4fd4e";
     private static final String ADMIN_MDP = "mdp";
 
+
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = HOST;

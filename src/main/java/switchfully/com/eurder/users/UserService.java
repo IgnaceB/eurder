@@ -34,6 +34,7 @@ public class UserService {
     }
 
     public UserDTO getOneCustomerDTOByID(UUID customerId) {
+        System.out.println(userMapper.toDTO(getOneCustomerById(customerId)));
         return userMapper.toDTO(getOneCustomerById(customerId));
     }
 

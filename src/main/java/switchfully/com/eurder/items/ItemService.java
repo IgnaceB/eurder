@@ -4,9 +4,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import switchfully.com.eurder.exceptions.ItemNotFoundException;
 import switchfully.com.eurder.items.dto.ItemCreateDTO;
+import switchfully.com.eurder.items.dto.ItemDTO;
 import switchfully.com.eurder.items.dto.ItemUpdateDTO;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,4 +45,9 @@ public class ItemService {
         );
     }
 
+    public List<ItemDTO> getAllItems() {
+        return itemRepository.findAll().stream()
+                .map(item -> itemMapper.toDto(item))
+                .collect(Collectors.toList());
+    }
 }
